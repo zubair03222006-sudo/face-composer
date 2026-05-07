@@ -11,6 +11,7 @@ interface CaseRow {
   features: Features;
   image_url: string | null;
   image_path: string | null;
+  images?: string[];
   mode: string;
   style: string;
   created_at: string;
