@@ -151,22 +151,20 @@ function ForensicComposer() {
 
     // Single DB round-trip. No storage re-upload: images are already persisted
     // URLs (or data URLs) and stored directly in the jsonb column.
-    const op = activeCaseId
-      ? supabase.from("forensic_cases").update(payload).eq("id", activeCaseId).select().single()
-      : supabase.from("forensic_cases").insert(payload).select().single();
+    const run = async () => {
+      const { data, error } = activeCaseId
+        ? await supabase.from("forensic_cases").update(payload).eq("id", activeCaseId).select().single()
+        : await supabase.from("forensic_cases").insert(payload).select().single();
+      if (error) throw error;
+      if (!activeCaseId && data) setActiveCaseId(data.id);
+      return data;
+    };
 
-    toast.promise(
-      op.then(({ data, error }) => {
-        if (error) throw error;
-        if (!activeCaseId && data) setActiveCaseId(data.id);
-        return data;
-      }),
-      {
-        loading: `Archiving ${caseNumber}…`,
-        success: `Case ${caseNumber} ${activeCaseId ? "updated" : "archived"} · ${allImages.length} image${allImages.length > 1 ? "s" : ""}`,
-        error: (e) => (e instanceof Error ? e.message : "Save failed"),
-      },
-    );
+    toast.promise(run(), {
+      loading: `Archiving ${caseNumber}…`,
+      success: `Case ${caseNumber} ${activeCaseId ? "updated" : "archived"} · ${allImages.length} image${allImages.length > 1 ? "s" : ""}`,
+      error: (e) => (e instanceof Error ? e.message : "Save failed"),
+    });
   };
 
   const newCase = () => {
