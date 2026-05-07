@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 interface Props {
   features: Features;
   onChange: (f: Features) => void;
+  onGenerate?: () => void;
+  loading?: boolean;
 }
 
-export function FeaturePanel({ features, onChange }: Props) {
+export function FeaturePanel({ features, onChange, onGenerate, loading }: Props) {
   const [open, setOpen] = useState<Record<string, boolean>>({
     identity: true,
     face: true,
