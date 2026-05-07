@@ -42,34 +42,37 @@
 :root {
   --radius: 0.375rem;
 
-  /* Law Enforcement Navy palette */
-  --background: oklch(0.18 0.04 255);
-  --foreground: oklch(0.96 0.01 240);
+  /* Cyberpunk Navy palette */
+  --background: oklch(0.14 0.04 255);
+  --foreground: oklch(0.97 0.02 200);
 
-  --card: oklch(0.22 0.045 255);
-  --card-foreground: oklch(0.96 0.01 240);
+  --card: oklch(0.18 0.045 255);
+  --card-foreground: oklch(0.97 0.02 200);
 
-  --popover: oklch(0.22 0.045 255);
-  --popover-foreground: oklch(0.96 0.01 240);
+  --popover: oklch(0.18 0.045 255);
+  --popover-foreground: oklch(0.97 0.02 200);
 
-  --primary: oklch(0.62 0.13 245);
+  /* Cyberpunk glowing cyan */
+  --primary: oklch(0.82 0.17 215);
   --primary-foreground: oklch(0.12 0.04 255);
+  --primary-glow: oklch(0.85 0.2 210);
 
-  --secondary: oklch(0.28 0.05 255);
-  --secondary-foreground: oklch(0.96 0.01 240);
+  --secondary: oklch(0.24 0.05 255);
+  --secondary-foreground: oklch(0.97 0.02 200);
 
-  --muted: oklch(0.26 0.04 255);
-  --muted-foreground: oklch(0.7 0.03 245);
+  --muted: oklch(0.22 0.04 255);
+  --muted-foreground: oklch(0.72 0.05 215);
 
-  --accent: oklch(0.55 0.18 35);
-  --accent-foreground: oklch(0.98 0.01 80);
+  --accent: oklch(0.78 0.22 330);
+  --accent-foreground: oklch(0.12 0.04 255);
 
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.98 0.01 80);
 
-  --border: oklch(0.32 0.04 255);
-  --input: oklch(0.26 0.04 255);
-  --ring: oklch(0.62 0.13 245);
+  --border: oklch(0.3 0.06 230 / 0.6);
+  --input: oklch(0.22 0.04 255);
+  --ring: oklch(0.82 0.17 215);
+  --grid-line: oklch(0.5 0.12 215 / 0.18);
 
   --evidence: oklch(0.28 0.05 255);
   --evidence-foreground: oklch(0.92 0.01 240);
@@ -103,8 +106,8 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     background-image:
-      linear-gradient(var(--color-border) 1px, transparent 1px),
-      linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
     background-size: 48px 48px;
     background-position: -1px -1px;
   }
@@ -113,7 +116,9 @@
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background: radial-gradient(ellipse at top, transparent 0%, var(--color-background) 70%);
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, oklch(0.82 0.17 215 / 0.08), transparent 60%),
+      radial-gradient(ellipse at bottom, oklch(0.78 0.22 330 / 0.06), transparent 60%);
     z-index: 0;
   }
   h1, h2, h3, h4, .mono { font-family: var(--font-mono); letter-spacing: -0.02em; }
@@ -128,13 +133,33 @@
     color: var(--color-muted-foreground);
   }
   .panel {
-    background-color: var(--color-card);
+    background-color: color-mix(in oklab, var(--color-card) 85%, transparent);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
+    backdrop-filter: blur(6px);
   }
   .accent-bar {
-    background: linear-gradient(90deg, var(--color-accent), transparent);
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent), transparent);
+    box-shadow: 0 0 12px var(--color-primary);
   }
+  .text-glow { text-shadow: 0 0 8px color-mix(in oklab, var(--color-primary) 70%, transparent); }
+  .neon-border {
+    border-color: color-mix(in oklab, var(--color-primary) 60%, transparent);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in oklab, var(--color-primary) 30%, transparent),
+      0 0 18px color-mix(in oklab, var(--color-primary) 25%, transparent);
+  }
+  .neon-btn {
+    background: linear-gradient(180deg, color-mix(in oklab, var(--color-primary) 90%, transparent), color-mix(in oklab, var(--primary-glow) 90%, transparent));
+    color: var(--color-primary-foreground);
+    box-shadow:
+      0 0 0 1px color-mix(in oklab, var(--color-primary) 40%, transparent),
+      0 0 20px color-mix(in oklab, var(--color-primary) 50%, transparent),
+      inset 0 1px 0 oklch(1 0 0 / 0.25);
+    transition: filter 0.2s, transform 0.1s;
+  }
+  .neon-btn:hover { filter: brightness(1.15) saturate(1.1); }
+  .neon-btn:active { transform: translateY(1px); }
   .scan-line::after {
     content: "";
     position: absolute;
@@ -143,9 +168,56 @@
       0deg,
       transparent 0,
       transparent 3px,
-      oklch(1 0 0 / 0.015) 3px,
-      oklch(1 0 0 / 0.015) 4px
+      oklch(0.82 0.17 215 / 0.04) 3px,
+      oklch(0.82 0.17 215 / 0.04) 4px
     );
     pointer-events: none;
   }
+  .canvas-grid {
+    background-image:
+      linear-gradient(oklch(0.82 0.17 215 / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.82 0.17 215 / 0.08) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  /* Scanning beam top -> bottom while generating */
+  .scanning::before {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+    box-shadow: 0 0 24px 6px color-mix(in oklab, var(--color-primary) 70%, transparent);
+    z-index: 25;
+    animation: scanY 2s linear infinite;
+    pointer-events: none;
+  }
+  .scanning::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in oklab, var(--color-primary) 8%, transparent) 50%,
+      transparent 100%
+    );
+    background-size: 100% 200%;
+    animation: scanGlow 2s linear infinite;
+    pointer-events: none;
+    z-index: 24;
+  }
+  @keyframes scanY {
+    0%   { top: -2%; }
+    100% { top: 102%; }
+  }
+  @keyframes scanGlow {
+    0%   { background-position: 0 -100%; }
+    100% { background-position: 0 100%; }
+  }
+  @keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 8px color-mix(in oklab, var(--color-primary) 40%, transparent); }
+    50%      { box-shadow: 0 0 18px color-mix(in oklab, var(--color-primary) 70%, transparent); }
+  }
+  .pulse-dot { animation: pulseGlow 1.6s ease-in-out infinite; }
 }
