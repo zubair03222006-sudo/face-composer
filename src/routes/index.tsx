@@ -448,6 +448,25 @@ function ForensicComposer() {
               </ul>
             )}
           </div>
+          {history.length > 2 && (
+            <div className="border-t border-primary/40 bg-primary/5 p-3">
+              <p className="label-stamp mb-1.5 text-primary">
+                {history.length} variants · 1 case file
+              </p>
+              <p className="mb-2 text-[10px] text-muted-foreground leading-snug">
+                Bundles all generated images, investigator notes & selected attributes under
+                <span className="mono text-primary"> {caseNumber}</span>.
+              </p>
+              <button
+                onClick={saveCase}
+                disabled={loading}
+                className="neon-btn flex w-full items-center justify-center gap-2 rounded px-3 py-2.5 text-xs font-bold uppercase tracking-wider disabled:opacity-50"
+              >
+                {loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Save className="h-3.5 w-3.5" />}
+                Save This Case
+              </button>
+            </div>
+          )}
         </aside>
       </main>
     </div>
