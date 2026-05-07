@@ -270,38 +270,40 @@ function ForensicComposer() {
             </div>
 
             {/* Canvas */}
-            <div className={cn(
-              "scan-line canvas-grid relative flex flex-1 items-center justify-center overflow-hidden m-4 rounded border border-primary/30 neon-border",
-              loading && "scanning",
-            )}>
-              <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">
-                <span className="label-stamp text-primary">● REC</span>
-                <span className="label-stamp">{caseNumber}</span>
-              </div>
-              <div className="absolute right-3 top-3 z-10 text-right">
-                <span className="label-stamp text-primary">{mode.toUpperCase()} · {style.toUpperCase()}</span>
-              </div>
+            <div className="flex justify-center px-4 py-3">
+              <div className={cn(
+                "scan-line canvas-grid relative flex items-center justify-center overflow-hidden rounded border border-primary/30 neon-border w-full max-w-[520px] aspect-[4/3]",
+                loading && "scanning",
+              )}>
+                <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">
+                  <span className="label-stamp text-primary">● REC</span>
+                  <span className="label-stamp">{caseNumber}</span>
+                </div>
+                <div className="absolute right-3 top-3 z-10 text-right">
+                  <span className="label-stamp text-primary">{mode.toUpperCase()} · {style.toUpperCase()}</span>
+                </div>
 
-              {imageUrl ? (
-                <img src={imageUrl} alt="Forensic composite" className="max-h-full max-w-full object-contain p-6" />
-              ) : (
-                <div className="flex flex-col items-center gap-3 px-8 text-center">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-dashed border-primary/40 text-primary">
-                    <Camera className="h-7 w-7" />
+                {imageUrl ? (
+                  <img src={imageUrl} alt="Forensic composite" className="h-full w-full object-contain p-2" />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 px-8 text-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-primary/40 text-primary">
+                      <Camera className="h-6 w-6" />
+                    </div>
+                    <p className="mono text-xs font-semibold text-glow">NO COMPOSITE GENERATED</p>
+                    <p className="text-[11px] text-muted-foreground">Configure attributes & press GENERATE</p>
                   </div>
-                  <p className="mono text-sm font-semibold text-glow">NO COMPOSITE GENERATED</p>
-                  <p className="text-xs text-muted-foreground">Configure suspect attributes & press GENERATE</p>
-                </div>
-              )}
+                )}
 
-              {loading && (
-                <div className="absolute bottom-3 left-1/2 z-30 -translate-x-1/2 rounded border border-primary/50 bg-background/80 px-3 py-1.5 text-[10px] mono uppercase tracking-widest text-primary backdrop-blur">
-                  <ScanLine className="mr-1.5 inline h-3 w-3 animate-pulse" />
-                  {mode === "realistic" ? "Reconstructing portrait…" : "Scanning composite…"}
-                </div>
-              )}
+                {loading && (
+                  <div className="absolute bottom-3 left-1/2 z-30 -translate-x-1/2 rounded border border-primary/50 bg-background/80 px-3 py-1.5 text-[10px] mono uppercase tracking-widest text-primary backdrop-blur">
+                    <ScanLine className="mr-1.5 inline h-3 w-3 animate-pulse" />
+                    {mode === "realistic" ? "Reconstructing portrait…" : "Scanning composite…"}
+                  </div>
+                )}
 
-              <Bracket pos="tl" /> <Bracket pos="tr" /> <Bracket pos="bl" /> <Bracket pos="br" />
+                <Bracket pos="tl" /> <Bracket pos="tr" /> <Bracket pos="bl" /> <Bracket pos="br" />
+              </div>
             </div>
 
             {/* Action bar */}
