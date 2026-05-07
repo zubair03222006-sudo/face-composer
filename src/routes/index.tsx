@@ -192,6 +192,8 @@ function ForensicComposer() {
   const loadCase = (c: CaseRow) => {
     setFeatures(c.features || {});
     setImageUrl(c.image_url);
+    const imgs = (c as CaseRow & { images?: string[] }).images;
+    setHistory(Array.isArray(imgs) ? imgs : c.image_url ? [c.image_url] : []);
     setNotes(c.notes ?? "");
     setCaseNumber(c.case_number);
     setMode((c.mode as Mode) || "sketch");
