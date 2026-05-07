@@ -241,7 +241,7 @@ function ForensicComposer() {
         {/* Center column */}
         <section className="flex flex-col gap-3 overflow-hidden">
           {/* Composite Preview Card */}
-          <div className="panel flex flex-1 flex-col overflow-hidden">
+          <div className="panel flex flex-col overflow-hidden">
             <div className="flex items-center justify-between border-b border-border px-4 py-2.5">
               <div className="flex items-center gap-2">
                 <Maximize2 className="h-3.5 w-3.5 text-primary" />
