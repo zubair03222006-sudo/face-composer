@@ -146,15 +146,19 @@ function ForensicComposer() {
       if (upErr) throw upErr;
       const { data: urlData } = supabase.storage.from("forensic-sketches").getPublicUrl(path);
 
+      // Collect ALL generated images for this session (current + history, deduped)
+      const allImages = Array.from(new Set([imageUrl, ...history].filter(Boolean) as string[]));
+
       const payload = {
         case_number: caseNumber,
         notes,
         features,
         image_url: urlData.publicUrl,
         image_path: path,
+        images: allImages,
         mode,
         style,
-      };
+      } as never;
 
       if (activeCaseId) {
         const { error } = await supabase.from("forensic_cases").update(payload).eq("id", activeCaseId);
