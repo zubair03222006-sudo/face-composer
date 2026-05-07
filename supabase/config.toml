@@ -1,1 +1,4 @@
 project_id = "edcyqxfnhglgimafnbmn"
+
+[functions.generate-forensic-sketch]
+verify_jwt = false
