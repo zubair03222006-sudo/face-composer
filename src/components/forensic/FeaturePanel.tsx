@@ -103,6 +103,20 @@ export function FeaturePanel({ features, onChange, onGenerate, loading }: Props)
           );
         })}
       </div>
+      {onGenerate && (
+        <div className="border-t border-border bg-background/60 p-3">
+          <button
+            onClick={onGenerate}
+            disabled={loading || filledCount === 0}
+            className="neon-btn flex w-full items-center justify-center gap-2 rounded px-4 py-3 text-xs font-bold uppercase tracking-wider disabled:opacity-50"
+          >
+            {loading ? "Generating…" : `Submit & Generate Sketch (${filledCount})`}
+          </button>
+          <p className="mt-2 text-center text-[10px] text-muted-foreground">
+            Composite will render in the preview panel →
+          </p>
+        </div>
+      )}
     </aside>
   );
 }
