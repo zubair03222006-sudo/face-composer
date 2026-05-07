@@ -135,46 +135,36 @@ function ForensicComposer() {
 
   const saveCase = async () => {
     if (!imageUrl) return toast.error("Generate an image before saving");
-    setLoading(true);
-    try {
-      const blob = await (await fetch(imageUrl)).blob();
-      const path = `${caseNumber}-${Date.now()}.png`;
-      const { error: upErr } = await supabase.storage.from("forensic-sketches").upload(path, blob, {
-        contentType: "image/png",
-        upsert: true,
-      });
-      if (upErr) throw upErr;
-      const { data: urlData } = supabase.storage.from("forensic-sketches").getPublicUrl(path);
 
-      // Collect ALL generated images for this session (current + history, deduped)
-      const allImages = Array.from(new Set([imageUrl, ...history].filter(Boolean) as string[]));
+    // Collect ALL generated images for this session (current + history, deduped)
+    const allImages = Array.from(new Set([imageUrl, ...history].filter(Boolean) as string[]));
 
-      const payload = {
-        case_number: caseNumber,
-        notes,
-        features,
-        image_url: urlData.publicUrl,
-        image_path: path,
-        images: allImages,
-        mode,
-        style,
-      } as never;
+    const payload = {
+      case_number: caseNumber,
+      notes,
+      features,
+      image_url: imageUrl,
+      images: allImages,
+      mode,
+      style,
+    } as never;
 
-      if (activeCaseId) {
-        const { error } = await supabase.from("forensic_cases").update(payload).eq("id", activeCaseId);
-        if (error) throw error;
-        toast.success(`Case ${caseNumber} updated`);
-      } else {
-        const { data, error } = await supabase.from("forensic_cases").insert(payload).select().single();
-        if (error) throw error;
-        setActiveCaseId(data.id);
-        toast.success(`Case ${caseNumber} archived`);
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Save failed");
-    } finally {
-      setLoading(false);
-    }
+    // Single DB round-trip. No storage re-upload: images are already persisted
+    // URLs (or data URLs) and stored directly in the jsonb column.
+    const run = async () => {
+      const { data, error } = activeCaseId
+        ? await supabase.from("forensic_cases").update(payload).eq("id", activeCaseId).select().single()
+        : await supabase.from("forensic_cases").insert(payload).select().single();
+      if (error) throw error;
+      if (!activeCaseId && data) setActiveCaseId(data.id);
+      return data;
+    };
+
+    toast.promise(run(), {
+      loading: `Archiving ${caseNumber}…`,
+      success: `Case ${caseNumber} ${activeCaseId ? "updated" : "archived"} · ${allImages.length} image${allImages.length > 1 ? "s" : ""}`,
+      error: (e) => (e instanceof Error ? e.message : "Save failed"),
+    });
   };
 
   const newCase = () => {
