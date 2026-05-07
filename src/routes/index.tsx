@@ -238,7 +238,7 @@ function ForensicComposer() {
 
       {/* Workspace */}
       <main className="grid h-[calc(100vh-65px)] grid-cols-1 gap-3 p-3 lg:grid-cols-[340px_1fr_300px]">
-        <FeaturePanel features={features} onChange={setFeatures} />
+        <FeaturePanel features={features} onChange={setFeatures} onGenerate={() => generate()} loading={loading} />
 
         {/* Center column */}
         <section className="flex flex-col gap-3 overflow-hidden">
