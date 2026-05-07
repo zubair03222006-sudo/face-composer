@@ -71,41 +71,49 @@ export function CaseDrawer({ open, onClose, onLoad }: Props) {
             <p className="p-6 text-center text-sm text-muted-foreground">No cases archived yet.</p>
           )}
           <ul className="space-y-2">
-            {cases.map((c) => (
-              <li key={c.id} className="flex gap-3 rounded-md border border-border bg-background/40 p-3">
-                {c.image_url ? (
-                  <img src={c.image_url} alt="" className="h-16 w-16 rounded object-cover ring-1 ring-border" />
-                ) : (
-                  <div className="h-16 w-16 rounded bg-muted" />
+            {cases.map((c) => {
+              const imgs = (c.images && c.images.length > 0) ? c.images : (c.image_url ? [c.image_url] : []);
+              return (
+              <li key={c.id} className="rounded-md border border-border bg-background/40 p-3">
+                <div className="flex gap-3">
+                  {c.image_url ? (
+                    <img src={c.image_url} alt="" className="h-16 w-16 rounded object-cover ring-1 ring-border" />
+                  ) : (
+                    <div className="h-16 w-16 rounded bg-muted" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="mono text-sm font-semibold text-primary">{c.case_number}</p>
+                    <p className="truncate text-xs text-muted-foreground">{c.notes || "No notes"}</p>
+                    <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+                      {new Date(c.created_at).toLocaleString()} · {imgs.length} image{imgs.length === 1 ? "" : "s"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <button
+                      onClick={() => { onLoad(c); onClose(); }}
+                      className="rounded border border-border p-1.5 hover:border-primary hover:text-primary"
+                      title="Load"
+                    >
+                      <FolderOpen className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => remove(c)}
+                      className="rounded border border-border p-1.5 hover:border-destructive hover:text-destructive"
+                      title="Purge"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+                {imgs.length > 1 && (
+                  <div className="mt-2 flex gap-1.5 overflow-x-auto">
+                    {imgs.map((u, i) => (
+                      <img key={i} src={u} alt="" className="h-12 w-12 flex-shrink-0 rounded object-cover ring-1 ring-border" />
+                    ))}
+                  </div>
                 )}
-                <div className="flex-1 min-w-0">
-                  <p className="mono text-sm font-semibold text-primary">{c.case_number}</p>
-                  <p className="truncate text-xs text-muted-foreground">{c.notes || "No notes"}</p>
-                  <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-                    {new Date(c.created_at).toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <button
-                    onClick={() => {
-                      onLoad(c);
-                      onClose();
-                    }}
-                    className="rounded border border-border p-1.5 hover:border-primary hover:text-primary"
-                    title="Load"
-                  >
-                    <FolderOpen className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => remove(c)}
-                    className="rounded border border-border p-1.5 hover:border-destructive hover:text-destructive"
-                    title="Purge"
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                </div>
               </li>
-            ))}
+            );})}
           </ul>
         </div>
       </div>
